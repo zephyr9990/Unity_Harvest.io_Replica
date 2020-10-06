@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 873122241212978800}
   m_Layer: 0
   m_Name: CargoNoWheels
-  m_TagString: Untagged
+  m_TagString: CargoBox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

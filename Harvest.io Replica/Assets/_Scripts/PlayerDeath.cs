@@ -8,7 +8,7 @@ public class PlayerDeath : MonoBehaviour
     public OnPlayerDeath onPlayerDeath;
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Cargo"))
+        if (other.CompareTag("Cargo") || other.CompareTag("Tractor"))
         {
             onPlayerDeath?.Invoke();
         }

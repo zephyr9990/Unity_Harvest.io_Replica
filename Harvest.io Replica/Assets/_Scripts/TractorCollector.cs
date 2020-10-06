@@ -13,5 +13,14 @@ public class TractorCollector : MonoBehaviour
             onGrainCollected?.Invoke();
             Destroy(other.gameObject);
         }
+
+        if (other.CompareTag("CargoBox"))
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                onGrainCollected?.Invoke();
+            }
+            Destroy(other.gameObject);
+        }
     }
 }

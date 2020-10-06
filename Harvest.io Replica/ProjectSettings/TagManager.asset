@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Grain
   - Cargo
+  - Tractor
+  - Bounds
+  - CargoBox
   layers:
   - Default
   - TransparentFX

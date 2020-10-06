@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2259315026197232294}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -5}
+  m_LocalPosition: {x: 0, y: 0, z: -2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 5374642008283545515}
@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 5374642008283545515}
   - component: {fileID: 4558607603467299699}
   - component: {fileID: 6224225239907843114}
+  - component: {fileID: 6520333222245702038}
   m_Layer: 0
   m_Name: Cargo
   m_TagString: Cargo
@@ -301,7 +302,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5374642008283545514}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.46, z: -4.98}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5374642007465055075}
@@ -326,9 +327,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backCargoFollowPosition: {fileID: 2259315026197232294}
-  movementSpeed: 5
   cargoToDrop: {fileID: 1716855359570382552, guid: 7c1aee7662d50944d9f1513502ae1bfd,
     type: 3}
+  movementSpeed: 5
+  rotateSpeed: 10
 --- !u!65 &6224225239907843114
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -342,6 +344,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2.5, y: 2.3, z: 3.5}
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!208 &6520333222245702038
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5374642008283545514}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 1.25, y: 1.15, z: 1.75}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &5374642008761166701
 GameObject:
   m_ObjectHideFlags: 0
