@@ -8,14 +8,16 @@ using UnityEngine.Analytics;
 public class CargoController : MonoBehaviour
 {
     [SerializeField] private GameObject grainCollector;
-    [SerializeField] private TractorCollector tractorCollector;
+    [SerializeField] private int playerIndex;
+    [SerializeField] private GrainCollector tractorCollector;
     [SerializeField] private GameObject cargo;
     [SerializeField] private GameObject initialCargoSpawnPosition;
-    [SerializeField] private PlayerDeath playerDeath;
+    [SerializeField] private TractorDeath playerDeath;
     [SerializeField] private int numOfGrainsForCargo = 30;
     private int numOfGrainsToLevelUp;
 
     private GameObject lastCargoSpawned;
+    private Scoreboard scoreboard;
     private GameObject nextCargoSpawnPosition;
     private int numOfGrainsCollected;
     private int level = 1;
@@ -32,6 +34,9 @@ public class CargoController : MonoBehaviour
     void Start()
     {
         tractorCollector.onGrainCollected += IncrementGrainCount;
+
+        scoreboard = GameObject.FindGameObjectWithTag("Scoreboard").GetComponent<Scoreboard>();
+
     }
 
     /// <summary>
@@ -41,6 +46,7 @@ public class CargoController : MonoBehaviour
     private void IncrementGrainCount()
     {
         numOfGrainsCollected++;
+        scoreboard.updateScore(playerIndex, numOfGrainsCollected);
         if (CollectedEnoughToSpawnCargo())
         {
             SpawnCargo();
@@ -99,7 +105,7 @@ public class CargoController : MonoBehaviour
             // Initialize behavior by setting follow target and subscribing to player death.
             CargoMovement cargoMovement = lastCargoSpawned.GetComponent<CargoMovement>();
             cargoMovement.SetFollowTarget(nextCargoSpawnPosition);
-            cargoMovement.SubscribeToPlayerDeath(playerDeath);
+
 
             // Set next spawn location of the next cargo to spawn.
             nextCargoSpawnPosition = cargoMovement.GetNextCargoPosition();

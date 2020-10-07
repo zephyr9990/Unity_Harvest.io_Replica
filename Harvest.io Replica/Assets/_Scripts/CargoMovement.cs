@@ -39,17 +39,6 @@ public class CargoMovement : MonoBehaviour
     {
         followTarget = target;
     }
-
-    /// <summary>
-    /// Subscribes to the player death event.
-    /// </summary>
-    /// <param name="playerDeath">The script pointing to the player death event.</param>
-    public void SubscribeToPlayerDeath(PlayerDeath playerDeath)
-    {
-        playerDeath.onPlayerDeath += DropCargo;
-    }
-
-
     /// <summary>
     /// Rotate towards the target.
     /// </summary>
@@ -57,7 +46,7 @@ public class CargoMovement : MonoBehaviour
     {
         Vector3 toFollowPosition = followTarget.transform.position - transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(toFollowPosition, Vector3.up);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, UnityEngine.Time.deltaTime * rotateSpeed);
     }
 
     /// <summary>
@@ -65,13 +54,13 @@ public class CargoMovement : MonoBehaviour
     /// </summary>
     private void MoveToTarget()
     {
-        transform.position = Vector3.Lerp(transform.position, followTarget.transform.position, Time.deltaTime * movementSpeed);
+        transform.position = Vector3.Lerp(transform.position, followTarget.transform.position, UnityEngine.Time.deltaTime * movementSpeed);
     }
 
     /// <summary>
     /// On death, drop cargo.
     /// </summary>
-    private void DropCargo()
+    public void DropCargo()
     {
         Instantiate(cargoToDrop, transform.position, transform.rotation);
         Destroy(gameObject);

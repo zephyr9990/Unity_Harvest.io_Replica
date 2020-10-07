@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        player.GetComponentInChildren<PlayerDeath>().onPlayerDeath += PlayerDied;
+        player.GetComponentInChildren<TractorDeath>().onTractorDeath += PlayerDied;
     }
 
     private void Update()
@@ -77,12 +77,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDied()
     {
-        playerDead = true;
-        MeshRenderer[] meshRenderers = player.GetComponentsInChildren<MeshRenderer>();
-        foreach(MeshRenderer meshRenderer in meshRenderers)
+        CargoMovement[] cargoMovements = transform.GetComponentsInChildren<CargoMovement>();
+        foreach (CargoMovement cargoMovement in cargoMovements)
         {
-            meshRenderer.enabled = false;
+            cargoMovement.DropCargo();
         }
-        Destroy(gameObject, 5f);
+        Destroy(gameObject);
     }
 }

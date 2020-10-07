@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TractorCollector : MonoBehaviour
+public class GrainCollector : MonoBehaviour
 {
+    
     public delegate void OnGrainCollected();
     public OnGrainCollected onGrainCollected;
+
+
+    private void Awake()
+    {
+        
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Grain"))

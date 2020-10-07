@@ -43,7 +43,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 4, y: 4, z: 4}
+  m_Size: {x: 3, y: 4, z: 4}
   m_Center: {x: 0, y: 2, z: 0.5}
 --- !u!114 &575271254
 MonoBehaviour:
@@ -67,7 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1890515966}
   - component: {fileID: 1890515968}
-  - component: {fileID: 3341833975002276577}
+  - component: {fileID: 842982937}
   m_Layer: 0
   m_Name: Detection
   m_TagString: Untagged
@@ -101,8 +101,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a2e78c08d47d54a936a7e6768b6a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &3341833975002276577
-BoxCollider:
+--- !u!135 &842982937
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -112,7 +112,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 3, y: 4, z: 7}
+  m_Radius: 8.27
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4031889929488927939
 GameObject:
@@ -529,7 +529,6 @@ MonoBehaviour:
   initialCargoSpawnPosition: {fileID: 8629757764685765628}
   playerDeath: {fileID: 575271254}
   numOfGrainsForCargo: 30
-  numOfGrainsToLevelUp: 50
 --- !u!114 &151352317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -545,7 +544,7 @@ MonoBehaviour:
   tractor: {fileID: 8629757764736263876}
   detectionBox: {fileID: 1890515968}
   movementSpeed: 5
-  turnSpeed: 5
+  turnSpeed: 10
 --- !u!1 &8629757763906366258
 GameObject:
   m_ObjectHideFlags: 0

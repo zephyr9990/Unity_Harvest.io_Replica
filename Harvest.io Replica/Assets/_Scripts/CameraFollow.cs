@@ -14,7 +14,7 @@ public class CameraFollow : MonoBehaviour
         if (followTarget)
         {
             Vector3 toTarget = followTarget.transform.position - transform.position;
-            transform.position = Vector3.Lerp(transform.position, followTarget.transform.position + offset, Time.deltaTime * followSpeed);
+            transform.position = Vector3.Lerp(transform.position, followTarget.transform.position + offset, UnityEngine.Time.deltaTime * followSpeed);
         }
     }
 }

@@ -15,19 +15,19 @@ public class AIController : MonoBehaviour
 
     private List<GameObject> grains;
     private List<GameObject> obstacles;
-    private Vector3 movementDirection;
+    private Quaternion lookDirection;
     private bool isDead;
 
     private void Awake()
     {
-        movementDirection = tractor.transform.forward;
+        lookDirection = Quaternion.identity;
         isDead = false;
     }
 
     private void Start()
     {
         grains = GameObject.FindGameObjectsWithTag("Grain").ToList();
-        tractor.GetComponentInChildren<PlayerDeath>().onPlayerDeath += Died;
+        tractor.GetComponentInChildren<TractorDeath>().onTractorDeath += Died;
 
         // Finds a new destination every 2 secs.
         InvokeRepeating("GoToNewDestination", .5f, 3f);
@@ -39,7 +39,7 @@ public class AIController : MonoBehaviour
         {
             // Finds all obstacles to avoid and avoids them
             if (ObstaclesToAvoid())
-                movementDirection = GetDirectionAwayFromObstacles();
+                lookDirection = GetDirectionAwayFromObstacles();
 
 
             MoveForward();
@@ -65,7 +65,7 @@ public class AIController : MonoBehaviour
                 return; // Update handles obstacle avoidance.
             }
 
-            movementDirection = GetMovementTowardsClosestGrain();
+            lookDirection = GetMovementTowardsClosestGrain();
         }
     }
 
@@ -73,26 +73,32 @@ public class AIController : MonoBehaviour
     /// Turns the object away from obstacles.
     /// </summary>
     /// <returns>A vector that points in the opposite direction of the obstacle.</returns>
-    private Vector3 GetDirectionAwayFromObstacles()
+    private Quaternion GetDirectionAwayFromObstacles()
     {
         GameObject closest = null;
         float distanceToClosest = Mathf.Infinity;
+        Vector3 vectorSum = Vector3.zero;
         foreach (GameObject obstacle in obstacles)
         {
             if (obstacle == null)
                 continue;
 
-            Vector3 toObstacle = obstacle.transform.position - transform.position;
-            if (toObstacle.magnitude < distanceToClosest)
-            {
-                closest = obstacle;
-                distanceToClosest = toObstacle.magnitude;
-            }
+            Vector3 toObstacle = obstacle.transform.position - tractor.transform.position;
+            vectorSum += toObstacle;
         }
 
-        Vector3 awayFromObstacle = tractor.transform.position + (tractor.transform.position - closest.transform.position);
-        awayFromObstacle.y = 0; // Do not need to move upward or downward.
-        return awayFromObstacle.normalized;
+        /*Vector3 awayFromObstacles = vectorSum - tractor.transform.position;
+        awayFromObstacles.y = 0;*/
+        vectorSum.y = 0;
+        Vector3 awayFromObstacles = vectorSum;
+        Quaternion targetRotation = Quaternion.LookRotation(awayFromObstacles, Vector3.up);
+        
+        targetRotation.y *= -(targetRotation.y / targetRotation.y);
+        Debug.Log(targetRotation.ToString());
+        /*
+                Vector3 awayFromObstacle = tractor.transform.position + (tractor.transform.position - closest.transform.position);
+                awayFromObstacle.y = 0; // Do not need to move upward or downward.*/
+        return targetRotation;
     }
 
     /// <summary>
@@ -108,15 +114,14 @@ public class AIController : MonoBehaviour
     /// </summary>
     private void LookTowardsMovement()
     {
-        Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
-        tractor.transform.rotation = Quaternion.Lerp(tractor.transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+        tractor.transform.rotation = Quaternion.Slerp(tractor.transform.rotation, lookDirection, Time.deltaTime * 2);
     }
 
     /// <summary>
     /// Finds the closest grain and gets a vector towards it.
     /// </summary>
     /// <returns>A vector pointing in the direction of the grain.</returns>
-    private Vector3 GetMovementTowardsClosestGrain()
+    private Quaternion GetMovementTowardsClosestGrain()
     {
         GameObject closestGrain = null;
         float distanceToClosestGrain = Mathf.Infinity;
@@ -130,6 +135,10 @@ public class AIController : MonoBehaviour
             }
 
             Vector3 toGrain = grains[i].transform.position - (tractor.transform.position + tractor.transform.forward * 5);
+            if (Vector3.Angle(toGrain, tractor.transform.forward * 5) > 170)
+            {
+                continue;
+            }
             if (toGrain.magnitude < distanceToClosestGrain)
             {
                 closestGrain = grains[i];
@@ -137,21 +146,19 @@ public class AIController : MonoBehaviour
                 
             }
         }
-        Vector3 toClosestGrain = closestGrain.transform.position - (tractor.transform.position+ tractor.transform.forward *5);
+        Vector3 toClosestGrain = closestGrain.transform.position - (tractor.transform.position+ tractor.transform.forward * 5);
         toClosestGrain.y = 0;
-        return toClosestGrain.normalized;
+        return Quaternion.LookRotation( toClosestGrain, Vector3.up);
     }
 
     private void Died()
     {
-        isDead = true;
-        MeshRenderer[] meshRenderers = tractor.GetComponentsInChildren<MeshRenderer>();
-        foreach (MeshRenderer meshRenderer in meshRenderers)
+        CargoMovement[] cargoMovements = transform.GetComponentsInChildren<CargoMovement>();
+        foreach (CargoMovement cargoMovement in cargoMovements)
         {
-            meshRenderer.enabled = false;
+            cargoMovement.DropCargo();
         }
-        Destroy(gameObject, .5f);
-
+        Destroy(gameObject);
     }
 }
 
