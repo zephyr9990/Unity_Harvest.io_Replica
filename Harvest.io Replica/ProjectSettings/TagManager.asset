@@ -9,6 +9,8 @@ TagManager:
   - Tractor
   - Bounds
   - CargoBox
+  - Scoreboard
+  - TimeHandler
   layers:
   - Default
   - TransparentFX

@@ -12,7 +12,6 @@ public class CargoController : MonoBehaviour
     [SerializeField] private GrainCollector tractorCollector;
     [SerializeField] private GameObject cargo;
     [SerializeField] private GameObject initialCargoSpawnPosition;
-    [SerializeField] private TractorDeath playerDeath;
     [SerializeField] private int numOfGrainsForCargo = 30;
     private int numOfGrainsToLevelUp;
 
@@ -39,6 +38,12 @@ public class CargoController : MonoBehaviour
 
     }
 
+    public void ResetGrainCount()
+    {
+        numOfGrainsCollected = 0;
+        scoreboard.UpdateScore(playerIndex, numOfGrainsCollected);
+    }
+
     /// <summary>
     /// Increments the grain count and if enough grain is collected,
     /// spawns an additional cargo.
@@ -46,7 +51,7 @@ public class CargoController : MonoBehaviour
     private void IncrementGrainCount()
     {
         numOfGrainsCollected++;
-        scoreboard.updateScore(playerIndex, numOfGrainsCollected);
+        scoreboard.UpdateScore(playerIndex, numOfGrainsCollected);
         if (CollectedEnoughToSpawnCargo())
         {
             SpawnCargo();
@@ -96,13 +101,14 @@ public class CargoController : MonoBehaviour
     /// </summary>
     private void SpawnCargo()
     {
-        // Spawn a cargo and parent it to the tractor.
         if (nextCargoSpawnPosition)
         {
+            if (nextCargoSpawnPosition != initialCargoSpawnPosition)
+                nextCargoSpawnPosition.transform.GetChild(0).gameObject.SetActive(true);
             lastCargoSpawned = Instantiate(cargo, nextCargoSpawnPosition.transform.position, nextCargoSpawnPosition.transform.rotation);
             lastCargoSpawned.transform.parent = transform;
 
-            // Initialize behavior by setting follow target and subscribing to player death.
+            // Initialize behavior by setting follow target.
             CargoMovement cargoMovement = lastCargoSpawned.GetComponent<CargoMovement>();
             cargoMovement.SetFollowTarget(nextCargoSpawnPosition);
 
@@ -110,5 +116,10 @@ public class CargoController : MonoBehaviour
             // Set next spawn location of the next cargo to spawn.
             nextCargoSpawnPosition = cargoMovement.GetNextCargoPosition();
         }
+    }
+
+    public int GetPlayerIndex()
+    {
+        return playerIndex;
     }
 }

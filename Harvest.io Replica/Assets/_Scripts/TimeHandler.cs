@@ -25,6 +25,9 @@ public class TimeHandler : MonoBehaviour
         InvokeRepeating("DecrementTime", 1f, 1f);
     }
 
+    /// <summary>
+    /// Decrements time.
+    /// </summary>
     void DecrementTime()
     {
         matchTime--;
@@ -32,20 +35,44 @@ public class TimeHandler : MonoBehaviour
 
         if (matchTime == 0)
         {
-            CancelInvoke();
-            winMessage.SetActive(true);
-            Text winText = winMessage.GetComponentInChildren<Text>();
-            winText.text = scoreboard.GetWinner() + " Wins!";
-            Time.timeScale = 0;
+            EndGame();
         }
     }
 
+    /// <summary>
+    /// Ends the game.
+    /// </summary>
+    public void EndGame()
+    {
+        CancelInvoke(); // Stops timer.
+        ShowWinMessage();
+        scoreboard.StopAllCoroutines(); // Stop moving all players on leaderboard.
+        Time.timeScale = 0;
+    }
+
+    /// <summary>
+    /// Shows the player who won.
+    /// </summary>
+    private void ShowWinMessage()
+    {
+        winMessage.SetActive(true);
+        Text winText = winMessage.GetComponentInChildren<Text>();
+        winText.text = scoreboard.GetWinner() + " Wins!";
+    }
+
+    /// <summary>
+    /// Updates the clock.
+    /// </summary>
     void UpdateUI()
     {
         slider.value = matchTime;
         timeText.text = GetRemainingTimeText();
     }
 
+    /// <summary>
+    /// Converts current time to "m:ss"
+    /// </summary>
+    /// <returns></returns>
     private string GetRemainingTimeText()
     {
         int minutes = matchTime / 60;

@@ -1,7 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.AI;
 
 public class CargoMovement : MonoBehaviour
 {
@@ -9,8 +10,11 @@ public class CargoMovement : MonoBehaviour
     [SerializeField] private GameObject cargoToDrop;
     [SerializeField] private float movementSpeed = 5.0f;
     [SerializeField] private float rotateSpeed = 10f;
-
+    
     private GameObject followTarget;
+    private Vector3 destination;
+    private LineRenderer lineRenderer;
+    private int currentIndex;
 
     private void Update()
     {
@@ -46,7 +50,7 @@ public class CargoMovement : MonoBehaviour
     {
         Vector3 toFollowPosition = followTarget.transform.position - transform.position;
         Quaternion targetRotation = Quaternion.LookRotation(toFollowPosition, Vector3.up);
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, UnityEngine.Time.deltaTime * rotateSpeed);
+        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotateSpeed);
     }
 
     /// <summary>
@@ -54,7 +58,7 @@ public class CargoMovement : MonoBehaviour
     /// </summary>
     private void MoveToTarget()
     {
-        transform.position = Vector3.Lerp(transform.position, followTarget.transform.position, UnityEngine.Time.deltaTime * movementSpeed);
+        transform.position = Vector3.Lerp(transform.position, followTarget.transform.position, Time.deltaTime * movementSpeed);
     }
 
     /// <summary>

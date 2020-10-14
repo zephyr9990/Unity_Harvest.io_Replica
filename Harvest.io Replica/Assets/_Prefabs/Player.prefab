@@ -467,11 +467,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grainCollector: {fileID: 8629757763906366258}
+  playerIndex: 0
   tractorCollector: {fileID: 8629757763906366256}
   cargo: {fileID: 5374642008283545514, guid: 53fde285af2167c44860edc5f8206343, type: 3}
   initialCargoSpawnPosition: {fileID: 8629757764685765628}
-  playerDeath: {fileID: 575271254}
-  numOfGrainsForCargo: 30
+  numOfGrainsForCargo: 80
 --- !u!114 &634643891
 MonoBehaviour:
   m_ObjectHideFlags: 0

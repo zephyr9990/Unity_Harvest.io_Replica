@@ -10,6 +10,7 @@ public class AIController : MonoBehaviour
 {
     [SerializeField] private GameObject tractor;
     [SerializeField] private ObstacleDetection detectionBox;
+    [SerializeField] private string respawn;
     [SerializeField] private float movementSpeed = 5.0f;
     [SerializeField] private float turnSpeed = 5.0f;
 
@@ -27,7 +28,7 @@ public class AIController : MonoBehaviour
     private void Start()
     {
         grains = GameObject.FindGameObjectsWithTag("Grain").ToList();
-        tractor.GetComponentInChildren<TractorDeath>().onTractorDeath += Died;
+        tractor.GetComponentInChildren<TractorDeath>().onTractorDeath += Die;
 
         // Finds a new destination every 2 secs.
         InvokeRepeating("GoToNewDestination", .5f, 3f);
@@ -41,12 +42,15 @@ public class AIController : MonoBehaviour
             if (ObstaclesToAvoid())
                 lookDirection = GetDirectionAwayFromObstacles();
 
-
             MoveForward();
             LookTowardsMovement();
         }
     }
 
+    /// <summary>
+    /// Checks to see if there are obstacles to avoid.
+    /// </summary>
+    /// <returns>True if there are obstacles to avoid, false if not.</returns>
     private bool ObstaclesToAvoid()
     {
         obstacles = detectionBox.GetObstacles();
@@ -75,8 +79,6 @@ public class AIController : MonoBehaviour
     /// <returns>A vector that points in the opposite direction of the obstacle.</returns>
     private Quaternion GetDirectionAwayFromObstacles()
     {
-        GameObject closest = null;
-        float distanceToClosest = Mathf.Infinity;
         Vector3 vectorSum = Vector3.zero;
         foreach (GameObject obstacle in obstacles)
         {
@@ -84,20 +86,16 @@ public class AIController : MonoBehaviour
                 continue;
 
             Vector3 toObstacle = obstacle.transform.position - tractor.transform.position;
-            vectorSum += toObstacle;
+            vectorSum += toObstacle; // Get resultant vector.
         }
 
-        /*Vector3 awayFromObstacles = vectorSum - tractor.transform.position;
-        awayFromObstacles.y = 0;*/
         vectorSum.y = 0;
         Vector3 awayFromObstacles = vectorSum;
         Quaternion targetRotation = Quaternion.LookRotation(awayFromObstacles, Vector3.up);
         
-        targetRotation.y *= -(targetRotation.y / targetRotation.y);
+        targetRotation.y *= -(targetRotation.y / targetRotation.y); // Changes the rotation to away from target.
         Debug.Log(targetRotation.ToString());
-        /*
-                Vector3 awayFromObstacle = tractor.transform.position + (tractor.transform.position - closest.transform.position);
-                awayFromObstacle.y = 0; // Do not need to move upward or downward.*/
+        
         return targetRotation;
     }
 
@@ -135,7 +133,9 @@ public class AIController : MonoBehaviour
             }
 
             Vector3 toGrain = grains[i].transform.position - (tractor.transform.position + tractor.transform.forward * 5);
-            if (Vector3.Angle(toGrain, tractor.transform.forward * 5) > 170)
+
+            // Do not move towards grains that are behind tractor.
+            if (IsBeyondAcceptableTurnAngle(toGrain))
             {
                 continue;
             }
@@ -143,7 +143,6 @@ public class AIController : MonoBehaviour
             {
                 closestGrain = grains[i];
                 distanceToClosestGrain = toGrain.magnitude;
-                
             }
         }
         Vector3 toClosestGrain = closestGrain.transform.position - (tractor.transform.position+ tractor.transform.forward * 5);
@@ -151,14 +150,50 @@ public class AIController : MonoBehaviour
         return Quaternion.LookRotation( toClosestGrain, Vector3.up);
     }
 
-    private void Died()
+    /// <summary>
+    /// Checks to see if position is beyond acceptable angle.
+    /// </summary>
+    /// <param name="position">The position to check.</param>
+    /// <returns>True if is beyond acceptable turn angle, false if not. </returns>
+    private bool IsBeyondAcceptableTurnAngle(Vector3 position)
+    {
+        return Vector3.Angle(position, tractor.transform.forward * 5) > 170;
+    }
+
+    /// <summary>
+    /// Code that is called on death.
+    /// </summary>
+    private void Die()
+    {
+        DropAllCargo();
+        // Reset score
+        CargoController cargoController = GetComponent<CargoController>();
+        cargoController.ResetGrainCount();
+
+        Respawn(cargoController);
+        Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Respawns this AI.
+    /// </summary>
+    /// <param name="cargoController">The cargoController that holds the playerIndex.</param>
+    private void Respawn(CargoController cargoController)
+    {
+        GameObject spawn = GameObject.FindGameObjectWithTag("Respawn").transform.GetChild(cargoController.GetPlayerIndex() - 1).gameObject;
+        Instantiate(Resources.Load(respawn), spawn.transform.position, spawn.transform.rotation);
+    }
+
+    /// <summary>
+    /// Drops all cargo.
+    /// </summary>
+    private void DropAllCargo()
     {
         CargoMovement[] cargoMovements = transform.GetComponentsInChildren<CargoMovement>();
         foreach (CargoMovement cargoMovement in cargoMovements)
         {
             cargoMovement.DropCargo();
         }
-        Destroy(gameObject);
     }
 }
 

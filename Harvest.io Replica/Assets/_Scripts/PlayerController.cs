@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Joystick joystick;
     [SerializeField] private float movementSpeed = 5.0f;
     [SerializeField] private float turnSpeed = 5.0f;
+    private TimeHandler timeHandler;
 
     private Rigidbody playerRigidBody;
     private Vector3 movementDirection;
@@ -18,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        timeHandler = GameObject.FindGameObjectWithTag("TimeHandler").GetComponent<TimeHandler>();
         playerRigidBody = player.GetComponent<Rigidbody>();
         movementDirection = player.transform.forward;
         lastMovementDirection = player.transform.forward;
@@ -53,7 +55,7 @@ public class PlayerController : MonoBehaviour
     private void LookTowardsMovement()
     {
         Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
-        player.transform.rotation = Quaternion.Lerp(player.transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
+        player.transform.rotation = Quaternion.Slerp(player.transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
     }
 
     /// <summary>
@@ -63,10 +65,9 @@ public class PlayerController : MonoBehaviour
     /// based on input from the joystick.</returns>
     private Vector3 GetMovementInput()
     {
-        
         Vector3 movement = new Vector3(joystick.Horizontal, 0.0f, joystick.Vertical);
         if (movement == Vector3.zero)
-            return lastMovementDirection;
+            return lastMovementDirection; // Continue moving in last movement direction.
 
         lastMovementDirection = movement;
         return movement;
@@ -77,11 +78,21 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerDied()
     {
+        GetComponent<CargoController>().ResetGrainCount();
+        DropAllCargo();
+        timeHandler.EndGame();
+        Destroy(gameObject);
+    }
+
+    /// <summary>
+    /// Drops all carried cargo.
+    /// </summary>
+    private void DropAllCargo()
+    {
         CargoMovement[] cargoMovements = transform.GetComponentsInChildren<CargoMovement>();
         foreach (CargoMovement cargoMovement in cargoMovements)
         {
             cargoMovement.DropCargo();
         }
-        Destroy(gameObject);
     }
 }

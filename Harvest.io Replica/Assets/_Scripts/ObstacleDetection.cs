@@ -21,12 +21,18 @@ public class ObstacleDetection : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Tractor") || other.CompareTag("Cargo") || other.CompareTag("Bounds"))
+        if (other.CompareTag("Tractor")
+            || other.CompareTag("Cargo") ||
+            other.CompareTag("Bounds"))
         {
             obstacles.Remove(other.gameObject);
         }
     }
 
+    /// <summary>
+    /// Get all detected obstacles.
+    /// </summary>
+    /// <returns>A list containing all the detected obstacles.</returns>
     public List<GameObject> GetObstacles()
     {
         return obstacles;

@@ -39,7 +39,12 @@ public class Scoreboard : MonoBehaviour
         grains = GameObject.FindGameObjectsWithTag("Grain").ToList();
     }
 
-    public void updateScore(int playerIndex, int numOfGrains)
+    /// <summary>
+    /// Updates the score.
+    /// </summary>
+    /// <param name="playerIndex">The index of the player to update.</param>
+    /// <param name="numOfGrains">The number of grains the player has.</param>
+    public void UpdateScore(int playerIndex, int numOfGrains)
     {
         scores[playerIndex] = numOfGrains;
         float grainsObtained = numOfGrains;
@@ -48,11 +53,15 @@ public class Scoreboard : MonoBehaviour
         float percentageObtained = Mathf.Round((grainsObtained / grains.Count * 100f * 10f))/10f;
         percentageText[playerIndex].text = string.Format("{0:F1}", percentageObtained) + "%";
 
-        UpdatePlace(playerIndex);
+        UpdatePlace();
     }
 
-    private void UpdatePlace(int playerIndex)
+    /// <summary>
+    /// Updates the podium place of all the players.
+    /// </summary>
+    private void UpdatePlace()
     {
+        // Compare and update place.
         for (int current = 0; current < scores.Length; current++)
         {
             for (int other = 0; other < scores.Length; other++)
@@ -69,9 +78,13 @@ public class Scoreboard : MonoBehaviour
             }
         }
 
-        StartCoroutine( UpdateUIPlacement());
+        StartCoroutine(UpdateUIPlacement());
     }
 
+    /// <summary>
+    /// Updates the placement of each player on the UI.
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator UpdateUIPlacement()
     {
         for (int i = 0; i < playerScores.Length; i++)
@@ -90,6 +103,10 @@ public class Scoreboard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets the current first placeman, and returns their name.
+    /// </summary>
+    /// <returns>The name of the current first place player.</returns>
     public string GetWinner()
     {
         string winnerName = "";
@@ -103,5 +120,13 @@ public class Scoreboard : MonoBehaviour
         }
 
         return winnerName;
+    }
+
+    /// <summary>
+    /// Stops all coroutines on this script.
+    /// </summary>
+    public void StopCoroutines()
+    {
+        StopAllCoroutines();
     }
 }

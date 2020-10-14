@@ -524,10 +524,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grainCollector: {fileID: 8629757763906366258}
+  playerIndex: 0
   tractorCollector: {fileID: 8629757763906366256}
   cargo: {fileID: 5374642008283545514, guid: 53fde285af2167c44860edc5f8206343, type: 3}
   initialCargoSpawnPosition: {fileID: 8629757764685765628}
-  playerDeath: {fileID: 575271254}
   numOfGrainsForCargo: 30
 --- !u!114 &151352317
 MonoBehaviour:
@@ -543,6 +543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tractor: {fileID: 8629757764736263876}
   detectionBox: {fileID: 1890515968}
+  respawnObject: {fileID: 893241267, guid: cd5d2dfefe5f45a439c45080675b681b, type: 3}
   movementSpeed: 5
   turnSpeed: 10
 --- !u!1 &8629757763906366258
